@@ -1,0 +1,39 @@
+# All in one deployment (tiles renderer + database...)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osm-tilesserver
+  labels:
+    app: osm-tilesserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osm-tilesserver
+  template:
+    metadata:
+      labels:
+        app: osm-tilesserver
+    spec:
+      containers:
+      - name: osm-tilesserver-aio
+        image: overv/openstreetmap-tile-server:dups
+        imagePullPolicy: IfNotPresent
+        args: ["run"]
+        ports:
+        - name: http
+          containerPort: 80
+        - name: postgres
+          containerPort: 5432
+        volumeMounts:
+        - name: postgres-data
+          mountPath: "/var/lib/postgresql/12/main"
+        - name: tiles-cache
+          mountPath: "/var/lib/mod_tile"
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: osm-postgres
+      - name: tiles-cache
+        persistentVolumeClaim:
+          claimName: osm-tiles

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: osm-tiles
+  labels:
+    app: osm-tilesserver
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: osm-tilesserver
+  type: NodePort
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: osm-db
+  labels:
+    app: osm-tilesserver
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+  selector:
+    app: osm-tilesserver
+  type: ClusterIP
