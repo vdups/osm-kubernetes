@@ -7,24 +7,10 @@ spec:
     spec:
       activeDeadlineSeconds: 3600
       initContainers:
-      - name: ls
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command: ["ls", "-l", "/var/lib/postgresql/12/main/.."]
-        volumeMounts:
-        - name: postgres-data
-          mountPath: "/var/lib/postgresql/12/main"
       - name: chown-dir
         image: busybox:latest
         imagePullPolicy: IfNotPresent
         command: ["chown", "-R", "102:105", "/var/lib/postgresql/12/main"]
-        volumeMounts:
-        - name: postgres-data
-          mountPath: "/var/lib/postgresql/12/main"
-      - name: ls2
-        image: overv/openstreetmap-tile-server:dups
-        imagePullPolicy: IfNotPresent
-        command: ["ls", "-l", "/var/lib/postgresql/12/main/.."]
         volumeMounts:
         - name: postgres-data
           mountPath: "/var/lib/postgresql/12/main"
@@ -44,13 +30,12 @@ spec:
           mountPath: "/tmp/download"
       containers:
       - name: osm-data-importer
-        image: overv/openstreetmap-tile-server:dups
+        image: overv/openstreetmap-tile-server:vdups
         imagePullPolicy: IfNotPresent
         args: ["import", "/tmp/download"]
         volumeMounts:
         - name: tempdownload
           mountPath: "/tmp/download"
-#TODO : import will try to use /data.osm.pbf and /data.poly files ==> how to remount files into / (not as a volume...) ==> tweak in run.sh : use second argument
         - name: postgres-data
           mountPath: "/var/lib/postgresql/12/main"
       restartPolicy: Never

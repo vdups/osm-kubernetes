@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: osm-tilesserver-aio
-        image: overv/openstreetmap-tile-server:dups
+        image: overv/openstreetmap-tile-server:vdups
         imagePullPolicy: IfNotPresent
         args: ["run"]
         ports:
